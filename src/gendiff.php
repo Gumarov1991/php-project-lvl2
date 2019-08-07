@@ -20,7 +20,7 @@ function run()
         -v --version                  Show version
         --format <fmt>                Report format [default: pretty]
 DOCOPT;
-    $docopt = Docopt::handle($doc, ['version'=>'1.0.0']);
+    $docopt = Docopt::handle($doc, ['version' => '1.0.0']);
     $firstFile = $docopt['<firstFile>'];
     $secondFile = $docopt['<secondFile>'];
     printing(genDiff($firstFile, $secondFile));
@@ -28,8 +28,8 @@ DOCOPT;
 
 function genDiff($pathToFile1, $pathToFile2)
 {
-    $readyPathToFile1 = $pathToFile1[0] === '/' ? $pathToFile1 : __DIR__."/{$pathToFile1}";
-    $readyPathToFile2 = $pathToFile2[0] === '/' ? $pathToFile2 : __DIR__."/{$pathToFile2}";
+    $readyPathToFile1 = $pathToFile1[0] === '/' ? $pathToFile1 : __DIR__ . "/{$pathToFile1}";
+    $readyPathToFile2 = $pathToFile2[0] === '/' ? $pathToFile2 : __DIR__ . "/{$pathToFile2}";
     $file1Data = json_decode(file_get_contents($readyPathToFile1), true);
     $file2Data = json_decode(file_get_contents($readyPathToFile2), true);
     $filesUnion = Collection\union($file1Data, $file2Data);
@@ -61,10 +61,10 @@ function printing($print)
 {
     $result = json_decode($print, true);
     print_r("{\n");
-        foreach ($result as $key => $value) {
-            $valueForPrint = stringForBool($value);
-            print_r('   ' . $key . ': ' . $valueForPrint . PHP_EOL);
-        }
+    foreach ($result as $key => $value) {
+        $valueForPrint = stringForBool($value);
+        print_r('   ' . $key . ': ' . $valueForPrint . PHP_EOL);
+    }
     print_r("}\n");
 }
 
