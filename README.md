@@ -6,3 +6,4 @@
 
 ## Install and ussage
 
+[![demo](https://asciinema.org/a/8v0tZqKKySntXaz56bSadmRnO.svg)](https://asciinema.org/a/8v0tZqKKySntXaz56bSadmRnO?autoplay=1)
