@@ -39,20 +39,16 @@ function genDiff($pathToFile1, $pathToFile2)
         if (array_key_exists($keyFilesUnion, $file1Data) && array_key_exists($keyFilesUnion, $file2Data)) {
             if ($file1Data[$keyFilesUnion] === $value && $file2Data[$keyFilesUnion] === $value) {
                 $acc["  {$keyFilesUnion}"] = $value;
-                return $acc;
             } else {
                 $acc["+ {$keyFilesUnion}"] = $value;
                 $acc["- {$keyFilesUnion}"] = $file1Data[$keyFilesUnion];
-                return $acc;
             }
-        }
-        if (array_key_exists($keyFilesUnion, $file1Data)) {
+        } elseif (array_key_exists($keyFilesUnion, $file1Data)) {
             $acc["- {$keyFilesUnion}"] = $value;
-            return $acc;
         } else {
             $acc["+ {$keyFilesUnion}"] = $value;
-            return $acc;
         }
+        return $acc;
     }, []);
     return json_encode($result, JSON_PRETTY_PRINT);
 }
