@@ -10,7 +10,7 @@ script:
   - make test
 
 after_script:
-  - vendor/bin/test-reporter
+  - vendor/bin/test-reporter < coverage/lcov.info
 
 addons:
   code_climate:
