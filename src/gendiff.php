@@ -50,6 +50,7 @@ function genDiff($pathToFile1, $pathToFile2)
         }
         return $acc;
     }, []);
+    print_r(json_encode($result, JSON_PRETTY_PRINT));
     return json_encode($result, JSON_PRETTY_PRINT);
 }
 
