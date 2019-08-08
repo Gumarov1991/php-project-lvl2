@@ -34,6 +34,7 @@
     },
     "scripts": {
         "phpcs": "phpcs",
-        "phpunit": "phpunit"
+        "phpunit": "phpunit",
+        "test": "phpunit tests"
     }
 }
