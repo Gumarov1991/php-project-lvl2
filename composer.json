@@ -19,7 +19,8 @@
     ],
     "autoload": {
         "files": [
-            "src/gendiff.php"
+            "src/gendiff.php",
+            "tests/fixtures/resultTest.php"
         ]
     },
     "require": {
@@ -28,10 +29,11 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.4",
-        "phpunit/phpunit": "^8.3"
+        "phpunit/phpunit": "^8.3",
+        "codeclimate/php-test-reporter": "^0.4.4"
     },
     "scripts": {
         "phpcs": "phpcs",
-        "test": "phpunit tests"
+        "phpunit": "phpunit"
     }
 }
