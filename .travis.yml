@@ -11,7 +11,3 @@ script:
 
 after_script:
   - vendor/bin/test-reporter
-
-addons:
-  code_climate:
-    repo_token: a8d3a4d6cd3eb767c488e4c1bc65023425778a5d89c6171ad4f9c45c5fc9c4ea
