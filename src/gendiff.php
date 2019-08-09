@@ -1,7 +1,8 @@
 <?php
 
-namespace Differ;
+namespace Differ\genDiff;
 
+use Differ\parsers\Parser;
 use Funct\Collection;
 use Docopt;
 
@@ -21,36 +22,35 @@ function run()
         --format <fmt>                Report format [default: pretty]
 DOCOPT;
     $docopt = Docopt::handle($doc, ['version' => '1.0.0']);
-    $firstFile = $docopt['<firstFile>'];
-    $secondFile = $docopt['<secondFile>'];
-    printing(genDiff($firstFile, $secondFile));
+    $file1 = $docopt['<firstFile>'];
+    $file2 = $docopt['<secondFile>'];
+    printing(genDiff($file1, $file2));
 }
 
-function genDiff($pathToFile1, $pathToFile2)
+function genDiff($file1, $file2)
 {
-    $readyPathToFile1 = $pathToFile1[0] === '/' ? $pathToFile1 : __DIR__ . "/{$pathToFile1}";
-    $readyPathToFile2 = $pathToFile2[0] === '/' ? $pathToFile2 : __DIR__ . "/{$pathToFile2}";
-    $file1Data = json_decode(file_get_contents($readyPathToFile1), true);
-    $file2Data = json_decode(file_get_contents($readyPathToFile2), true);
-    $filesUnion = Collection\union($file1Data, $file2Data);
-    $result = array_reduce($filesUnion, function ($acc, $value) use ($file1Data, $file2Data, $filesUnion) {
+    $parser1 = new Parser($file1);
+    $parser2 = new Parser($file2);
+    $arrForMerge1 = $parser1->genArrForMerge();
+    $arrForMerge2 = $parser2->genArrForMerge();
+    $unionArr = Collection\union($arrForMerge1, $arrForMerge2);
+    $result = array_reduce($unionArr, function ($acc, $value) use ($arrForMerge1, $arrForMerge2, $unionArr) {
         $valueForKey = stringForBool($value);
-        $keyFilesUnion = array_search($valueForKey, $filesUnion);
-        if (array_key_exists($keyFilesUnion, $file1Data) && array_key_exists($keyFilesUnion, $file2Data)) {
-            if ($file1Data[$keyFilesUnion] === $value && $file2Data[$keyFilesUnion] === $value) {
-                $acc["  {$keyFilesUnion}"] = $value;
+        $keyUnionArr = array_search($valueForKey, $unionArr);
+        if (array_key_exists($keyUnionArr, $arrForMerge1) && array_key_exists($keyUnionArr, $arrForMerge2)) {
+            if ($arrForMerge1[$keyUnionArr] === $value && $arrForMerge2[$keyUnionArr] === $value) {
+                $acc["  {$keyUnionArr}"] = $value;
             } else {
-                $acc["+ {$keyFilesUnion}"] = $value;
-                $acc["- {$keyFilesUnion}"] = $file1Data[$keyFilesUnion];
+                $acc["+ {$keyUnionArr}"] = $value;
+                $acc["- {$keyUnionArr}"] = $arrForMerge1[$keyUnionArr];
             }
-        } elseif (array_key_exists($keyFilesUnion, $file1Data)) {
-            $acc["- {$keyFilesUnion}"] = $value;
+        } elseif (array_key_exists($keyUnionArr, $arrForMerge1)) {
+            $acc["- {$keyUnionArr}"] = $value;
         } else {
-            $acc["+ {$keyFilesUnion}"] = $value;
+            $acc["+ {$keyUnionArr}"] = $value;
         }
         return $acc;
     }, []);
-    print_r(json_encode($result));
     return json_encode($result);
 }
 

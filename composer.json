@@ -20,12 +20,14 @@
     "autoload": {
         "files": [
             "src/gendiff.php",
-            "tests/fixtures/resultTest.php"
+            "src/parsers.php",
+            "tests/fixtures/dataTest.php"
         ]
     },
     "require": {
         "docopt/docopt": "^1.0",
-        "funct/funct": "^1.5"
+        "funct/funct": "^1.5",
+        "symfony/yaml": "^4.3"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.4",
@@ -34,7 +36,6 @@
     },
     "scripts": {
         "phpcs": "phpcs",
-        "phpunit": "phpunit",
-        "test": "phpunit tests"
+        "phpunit": "phpunit"
     }
 }
