@@ -14,7 +14,6 @@ class Parser
         $this->pathToFile = $file[0] === '/' ? $file : __DIR__ . "/{$file}";
         preg_match('/[^\.]+$/', $file, $matches);
         $this->extensionFile = $matches[0];
-        
     }
 
     public function genArrForMerge()
