@@ -34,7 +34,7 @@ function genDiff($file1, $file2)
     $arrForMerge1 = $parser1->genArrForMerge();
     $arrForMerge2 = $parser2->genArrForMerge();
     $mergeArr = genMergeArr($arrForMerge1, $arrForMerge2);
-    return json_encode(prepareDiff($arrForMerge1, $arrForMerge2, $mergeArr), JSON_PRETTY_PRINT);
+    return json_encode(prepareDiff($arrForMerge1, $arrForMerge2, $mergeArr));
 }
 
 function genMergeArr($arr1, $arr2)
