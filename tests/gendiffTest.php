@@ -12,5 +12,6 @@ class GenDiff extends TestCase
     {
         $this->assertEquals(DataTest::RESULT_JSON, genDiff(DataTest::FILE_JSON_1, DataTest::FILE_JSON_2));
         $this->assertEquals(DataTest::RESULT_YAML, genDiff(DataTest::FILE_YAML_1, DataTest::FILE_YAML_2));
+        $this->assertEquals(DataTest::RESULT_R_JSON, genDiff(DataTest::FILE_R_JSON_1, DataTest::FILE_R_JSON_2));
     }
 }

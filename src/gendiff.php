@@ -33,42 +33,89 @@ function genDiff($file1, $file2)
     $parser2 = new Parser($file2);
     $arrForMerge1 = $parser1->genArrForMerge();
     $arrForMerge2 = $parser2->genArrForMerge();
-    $unionArr = Collection\union($arrForMerge1, $arrForMerge2);
-    $result = array_reduce($unionArr, function ($acc, $value) use ($arrForMerge1, $arrForMerge2, $unionArr) {
-        $valueForKey = stringForBool($value);
-        $keyUnionArr = array_search($valueForKey, $unionArr);
-        if (array_key_exists($keyUnionArr, $arrForMerge1) && array_key_exists($keyUnionArr, $arrForMerge2)) {
-            if ($arrForMerge1[$keyUnionArr] === $value && $arrForMerge2[$keyUnionArr] === $value) {
-                $acc["  {$keyUnionArr}"] = $value;
+    $mergeArr = genMergeArr($arrForMerge1, $arrForMerge2);
+    return json_encode(prepareDiff($arrForMerge1, $arrForMerge2, $mergeArr), JSON_PRETTY_PRINT);
+}
+
+function genMergeArr($arr1, $arr2)
+{
+    foreach ($arr2 as $key => $val) {
+        if (is_array($val)) {
+            if (isset($arr1[$key]) && is_array($arr1[$key])) {
+                $arr1[$key] = genMergeArr($arr1[$key], $val);
             } else {
-                $acc["+ {$keyUnionArr}"] = $value;
-                $acc["- {$keyUnionArr}"] = $arrForMerge1[$keyUnionArr];
+                $arr1[$key] = $val;
             }
-        } elseif (array_key_exists($keyUnionArr, $arrForMerge1)) {
-            $acc["- {$keyUnionArr}"] = $value;
         } else {
-            $acc["+ {$keyUnionArr}"] = $value;
+            $arr1[$key] = $val;
         }
-        return $acc;
-    }, []);
-    return json_encode($result);
-}
-
-function printing($print)
-{
-    $result = json_decode($print, true);
-    print_r("{\n");
-    foreach ($result as $key => $value) {
-        $valueForPrint = stringForBool($value);
-        print_r('   ' . $key . ': ' . $valueForPrint . PHP_EOL);
     }
-    print_r("}\n");
+    return $arr1;
 }
 
-function stringForBool($value)
+function prepareDiff($arr1, $arr2, $mergeArr)
 {
-    if (gettype($value) === 'boolean') {
+    $arrResult = [];
+    foreach ($mergeArr as $key => $val) {
+        if (is_array($val)) {
+            if (isset($arr1[$key]) && isset($arr2[$key])) {
+                $arrResult["  {$key}"] = prepareDiff($arr1[$key], $arr2[$key], $mergeArr[$key]);
+            } elseif (isset($arr2[$key])) {
+                $arrResult["+ {$key}"] = prepareDiff($arr2[$key], $arr2[$key], $mergeArr[$key]);
+            } else {
+                $arrResult["- {$key}"] = prepareDiff($arr1[$key], $arr1[$key], $mergeArr[$key]);
+            }
+        } elseif (isset($arr1[$key]) && isset($arr2[$key])) {
+            if ($arr1[$key] === $val) {
+                $arrResult["  {$key}"] = $val;
+            } else {
+                $arrResult["+ {$key}"] = $val;
+                $arrResult["- {$key}"] = $arr1[$key];
+            }
+        } elseif (isset($arr2[$key])) {
+            $arrResult["+ {$key}"] = $val;
+        } else {
+            $arrResult["- {$key}"] = $val;
+        }
+    }
+    return $arrResult;
+}
+
+
+function printing($print, $key = "", $countSpacesForIndent = 0)
+{
+    $decoded = isJson($print) ? json_decode($print, true) : $print;
+    $indent = genIndentForPrinting($countSpacesForIndent);
+    if (is_array($decoded)) {
+        print_r("$indent$key: {\n");
+        foreach ($decoded as $key => $value) {
+            printing($value, $key, $countSpacesForIndent + 4);
+        }
+        print_r("$indent  }\n");
+    } else {
+        $string = genStringFromBool($decoded);
+        print_r("$indent$key: $string\n");
+    }
+}
+
+function genIndentForPrinting($count)
+{
+    $result = '';
+    for ($i = 0; $i < $count; $i++) {
+        $result .= ' ';
+    }
+    return $result;
+}
+
+function genStringFromBool($value)
+{
+    if (is_bool($value)) {
         return $value ? 'true' : 'false';
     }
     return $value;
+}
+
+function isJson($string)
+{
+    return is_string($string) && is_array(json_decode($string, true)) ? true : false;
 }
