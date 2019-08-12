@@ -3,7 +3,6 @@
 namespace Differ\genDiff;
 
 use Differ\parsers\Parser;
-use Funct\Collection;
 use Docopt;
 
 function run()
@@ -22,9 +21,11 @@ function run()
         --format <fmt>                Report format [default: pretty]
 DOCOPT;
     $docopt = Docopt::handle($doc, ['version' => '1.0.0']);
+    $format = $docopt['--format'];
     $file1 = $docopt['<firstFile>'];
     $file2 = $docopt['<secondFile>'];
-    printing(genDiff($file1, $file2));
+    $printing = "Differ\\Formatters\\{$format}\\printing";
+    $printing(genDiff($file1, $file2));
 }
 
 function genDiff($file1, $file2)
@@ -79,43 +80,4 @@ function prepareDiff($arr1, $arr2, $mergeArr)
         }
     }
     return $arrResult;
-}
-
-
-function printing($print, $key = "", $countSpacesForIndent = 0)
-{
-    $decoded = isJson($print) ? json_decode($print, true) : $print;
-    $indent = genIndentForPrinting($countSpacesForIndent);
-    if (is_array($decoded)) {
-        print_r("$indent$key: {\n");
-        foreach ($decoded as $key => $value) {
-            printing($value, $key, $countSpacesForIndent + 4);
-        }
-        print_r("$indent  }\n");
-    } else {
-        $string = genStringFromBool($decoded);
-        print_r("$indent$key: $string\n");
-    }
-}
-
-function genIndentForPrinting($count)
-{
-    $result = '';
-    for ($i = 0; $i < $count; $i++) {
-        $result .= ' ';
-    }
-    return $result;
-}
-
-function genStringFromBool($value)
-{
-    if (is_bool($value)) {
-        return $value ? 'true' : 'false';
-    }
-    return $value;
-}
-
-function isJson($string)
-{
-    return is_string($string) && is_array(json_decode($string, true)) ? true : false;
 }

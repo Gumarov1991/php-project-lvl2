@@ -7,4 +7,4 @@
 
 ## Install and ussage
 
-[![demo](https://asciinema.org/a/8v0tZqKKySntXaz56bSadmRnO.svg)](https://asciinema.org/a/8v0tZqKKySntXaz56bSadmRnO?autoplay=1)
+[![demo](https://asciinema.org/a/8v0tZqKKySntXaz56bSadmRnO.svg)](https://asciinema.org/a/HwJj9zzp97NVILJJJ1Ft9D3Eh?autoplay=1)
