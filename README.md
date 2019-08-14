@@ -5,9 +5,18 @@
 
 #### 'Generate diff' is the application for search differeces in configuration files.
 
-## Install and ussage
+### Install
+```
+curl -sS https://getcomposer.org/installer | php
+php composer.phar global require albert1991/php-project-lvl2
+```
+### Help
+```
+gendiff -h
+```
+### Ussage
 
-#### For examples we have 6 files:
+####### For examples we have 6 files:
 
 [before.json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/before.json) //
 [after.json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/after.json) //
@@ -15,4 +24,5 @@
 [after.yml](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/after.yml) //
 [recursiveBefore.json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/recursiveBefore.json) //
 [recursiveAfter.json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/recursiveAfter.json)
+
 [![demo](https://asciinema.org/a/McrdGLRJ5OZkSWkD1Nd56wCo8.svg)](https://asciinema.org/a/McrdGLRJ5OZkSWkD1Nd56wCo8?autoplay=1)
