@@ -9,10 +9,10 @@
 
 #### For examples we have 6 files:
 
-[before.json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/before.json)/
-[after.json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/after.json)/
-[before.yml](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/before.yml)/
-[after.yml](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/after.yml)/
-[recursiveBefore.json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/recursiveBefore.json)/
+[before.json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/before.json) //
+[after.json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/after.json) //
+[before.yml](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/before.yml) //
+[after.yml](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/after.yml) //
+[recursiveBefore.json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/recursiveBefore.json) //
 [recursiveAfter.json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/recursiveAfter.json)
 [![demo](https://asciinema.org/a/McrdGLRJ5OZkSWkD1Nd56wCo8.svg)](https://asciinema.org/a/McrdGLRJ5OZkSWkD1Nd56wCo8?autoplay=1)
