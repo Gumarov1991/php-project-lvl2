@@ -25,7 +25,6 @@ DOCOPT;
     $format = $docopt['--format'];
     $pathToFile1 = $docopt['<firstFile>'];
     $pathToFile2 = $docopt['<secondFile>'];
-    //var_dump(genDiff($pathToFile1, $pathToFile2, $format));
     print_r(genDiff($pathToFile1, $pathToFile2, $format));
 }
 
