@@ -2,8 +2,9 @@
 
 namespace Differ\genDiff;
 
-use Differ\parsers\Parser;
+use function Differ\parsers\genArr;
 use Docopt;
+use Funct\Collection;
 
 function run()
 {
@@ -22,62 +23,54 @@ function run()
 DOCOPT;
     $docopt = Docopt::handle($doc, ['version' => '1.0.0']);
     $format = $docopt['--format'];
-    $file1 = $docopt['<firstFile>'];
-    $file2 = $docopt['<secondFile>'];
+    $pathToFile1 = $docopt['<firstFile>'];
+    $pathToFile2 = $docopt['<secondFile>'];
+    //var_dump(genDiff($pathToFile1, $pathToFile2, $format));
+    print_r(genDiff($pathToFile1, $pathToFile2, $format));
+}
+
+function genDiff($pathToFile1, $pathToFile2, $format = 'pretty')
+{
+    $arr1 = genArr($pathToFile1);
+    $arr2 = genArr($pathToFile2);
+    $ast = buildAst($arr1, $arr2);
     $printing = "Differ\\Formatters\\{$format}\\printing";
-    $printing(genDiff($file1, $file2));
+    return $printing($ast);
 }
 
-function genDiff($file1, $file2)
+function buildAst($arr1, $arr2)
 {
-    $parser1 = new Parser($file1);
-    $parser2 = new Parser($file2);
-    $arrForMerge1 = $parser1->genArrForMerge();
-    $arrForMerge2 = $parser2->genArrForMerge();
-    $mergeArr = genMergeArr($arrForMerge1, $arrForMerge2);
-    return json_encode(prepareDiff($arrForMerge1, $arrForMerge2, $mergeArr));
-}
-
-function genMergeArr($arr1, $arr2)
-{
-    foreach ($arr2 as $key => $val) {
-        if (is_array($val)) {
-            if (isset($arr1[$key]) && is_array($arr1[$key])) {
-                $arr1[$key] = genMergeArr($arr1[$key], $val);
-            } else {
-                $arr1[$key] = $val;
-            }
+    $unionKeys = Collection\union(array_keys($arr1), array_keys($arr2));
+    $result = array_reduce($unionKeys, function ($acc, $value) use ($arr1, $arr2) {
+        if (isset($arr1[$value]) && !isset($arr2[$value])) {
+            $status = 'deleted';
+            $acc[] = buildNode($status, $value, $arr1[$value], '');
+        } elseif (!isset($arr1[$value])) {
+            $status = 'added';
+            $acc[] = buildNode($status, $value, $arr2[$value], '');
+        } elseif (is_array($arr1[$value]) && is_array($arr2[$value])) {
+            $status = 'nested';
+            $children = buildAST($arr1[$value], $arr2[$value]);
+            $acc[] = buildNode($status, $value, '', '', $children);
+        } elseif ($arr1[$value] === $arr2[$value]) {
+            $status = 'not changed';
+            $acc[] = buildNode($status, $value, $arr1[$value], $arr2[$value]);
         } else {
-            $arr1[$key] = $val;
+            $status = 'changed';
+            $acc[] = buildNode($status, $value, $arr1[$value], $arr2[$value]);
         }
-    }
-    return $arr1;
+        return $acc;
+    });
+    return $result;
 }
 
-function prepareDiff($arr1, $arr2, $mergeArr)
+function buildNode($status, $name, $oldValue, $newValue, $children = [])
 {
-    $arrResult = [];
-    foreach ($mergeArr as $key => $val) {
-        if (is_array($val)) {
-            if (isset($arr1[$key]) && isset($arr2[$key])) {
-                $arrResult["  {$key}"] = prepareDiff($arr1[$key], $arr2[$key], $mergeArr[$key]);
-            } elseif (isset($arr2[$key])) {
-                $arrResult["+ {$key}"] = prepareDiff($arr2[$key], $arr2[$key], $mergeArr[$key]);
-            } else {
-                $arrResult["- {$key}"] = prepareDiff($arr1[$key], $arr1[$key], $mergeArr[$key]);
-            }
-        } elseif (isset($arr1[$key]) && isset($arr2[$key])) {
-            if ($arr1[$key] === $val) {
-                $arrResult["  {$key}"] = $val;
-            } else {
-                $arrResult["+ {$key}"] = $val;
-                $arrResult["- {$key}"] = $arr1[$key];
-            }
-        } elseif (isset($arr2[$key])) {
-            $arrResult["+ {$key}"] = $val;
-        } else {
-            $arrResult["- {$key}"] = $val;
-        }
-    }
-    return $arrResult;
+    return [
+        'status' => $status,
+        'name' => $name,
+        'oldValue' => $oldValue,
+        'newValue' => $newValue,
+        'children' => $children
+    ];
 }

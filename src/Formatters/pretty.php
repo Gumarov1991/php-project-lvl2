@@ -2,40 +2,59 @@
 
 namespace Differ\Formatters\pretty;
 
-function printing($value, $key = "", $countSpacesForIndent = 0)
+use Funct\Collection;
+
+const TAB_INDENT = 4;
+const FIRST_INDENT = 2;
+
+function printing($data, $countSpacesIndent = 0)
 {
-    $decoded = isJson($value) ? json_decode($value, true) : $value;
-    $indent = genIndentForPrinting($countSpacesForIndent);
-    if (is_array($decoded)) {
-        print_r("$indent$key: {\n");
-        foreach ($decoded as $key => $value) {
-            printing($value, $key, $countSpacesForIndent + 4);
+    $arrResult = array_reduce($data, function ($acc, $value) use ($countSpacesIndent) {
+        $indent = str_repeat(' ', $countSpacesIndent + FIRST_INDENT);
+        $status = $value['status'];
+        $name = $value['name'];
+        $oldValue = genValue($value['oldValue'], $countSpacesIndent);
+        $newValue = genValue($value['newValue'], $countSpacesIndent);
+        $children = $value['children'];
+        
+        switch ($status) {
+            case 'nested':
+                $acc[] = $indent . "  " . $name . ": " . printing($value['children'], $countSpacesIndent + TAB_INDENT);
+                break;
+            case 'not changed':
+                $acc[] = $indent . "  " . $name . ": " . $oldValue;
+                break;
+            case 'deleted':
+                $acc[] = $indent . "- " . $name . ": " . $oldValue;
+                break;
+            case 'added':
+                $acc[] = $indent . "+ " . $name . ": " . $oldValue ;
+                break;
+            case 'changed':
+                $acc[] = $indent . "+ " . $name . ": " . $newValue;
+                $acc[] = $indent . "- " . $name . ": " . $oldValue;
+                break;
         }
-        print_r("$indent  }\n");
-    } else {
-        $string = genStringFromBool($decoded);
-        print_r("$indent$key: $string\n");
-    }
+        return $acc;
+    }, []);
+
+    $indent = str_repeat(' ', $countSpacesIndent);
+    $strResult = "{\n" . implode("\n", $arrResult) . $indent . "\n" . $indent . "}";
+    return $strResult;
 }
 
-function isJson($string)
+function genValue($value, $countSpacesIndent)
 {
-    return is_string($string) && is_array(json_decode($string, true)) ? true : false;
-}
-
-function genIndentForPrinting($count)
-{
-    $result = '';
-    for ($i = 0; $i < $count; $i++) {
-        $result .= ' ';
-    }
-    return $result;
-}
-
-function genStringFromBool($value)
-{
-    if (is_bool($value)) {
+    if (is_array($value)) {
+        $key = key($value);
+        $firstIndent = str_repeat(' ', $countSpacesIndent + TAB_INDENT * 2);
+        $lastIndent = str_repeat(' ', $countSpacesIndent + FIRST_INDENT);
+        return "{\n" . $firstIndent . $key . ": " . $value[$key] . "\n" . $lastIndent . "  }";
+    } elseif (is_bool($value)) {
         return $value ? 'true' : 'false';
+    } elseif (is_int($value)) {
+        return $value;
+    } else {
+        return $value;
     }
-    return $value;
 }

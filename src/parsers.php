@@ -4,25 +4,21 @@ namespace Differ\parsers;
 
 use Symfony\Component\Yaml\Yaml;
 
-class Parser
+
+function genArr($pathToFile)
 {
-    private $pathToFile;
-    private $extensionFile;
-
-    public function __construct($file)
-    {
-        $this->pathToFile = $file[0] === '/' ? $file : __DIR__ . "/{$file}";
-        preg_match('/[^\.]+$/', $file, $matches);
-        $this->extensionFile = $matches[0];
+    $absolutPath = $pathToFile[0] === '/' ? $pathToFile : __DIR__ . "/{$pathToFile}";
+    $extensionFile = getExtesion($pathToFile);
+    if ($extensionFile === 'json') {
+        return json_decode(file_get_contents($absolutPath), true);
     }
-
-    public function genArrForMerge()
-    {
-        if ($this->extensionFile === 'json') {
-            return json_decode(file_get_contents($this->pathToFile), true);
-        }
-        if ($this->extensionFile === 'yaml' || $this->extensionFile === 'yml') {
-            return Yaml::parseFile($this->pathToFile);
-        }
+    if ($extensionFile === 'yaml' || $extensionFile === 'yml') {
+        return Yaml::parseFile($absolutPath);
     }
+}
+
+function getExtesion($pathToFile)
+{
+    preg_match('/[^\.]+$/', $pathToFile, $matches);
+    return $matches[0];
 }
