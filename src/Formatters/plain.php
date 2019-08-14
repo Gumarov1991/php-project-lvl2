@@ -10,7 +10,6 @@ function printing($data, $path = '')
         $oldValue = genValue($value['oldValue']);
         $newValue = genValue($value['newValue']);
         $children = $value['children'];
-        //rint_r($oldValue);
         switch ($status) {
             case 'nested':
                 $path .= "$name.";
@@ -32,7 +31,6 @@ function printing($data, $path = '')
     $strResult = implode("\n", $arrResult);
     return $strResult;
 }
-
 
 function genValue($value)
 {
