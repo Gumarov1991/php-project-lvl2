@@ -23,8 +23,7 @@
             "src/parsers.php",
             "src/Formatters/pretty.php",
             "src/Formatters/plain.php",
-            "src/Formatters/json.php",
-            "tests/fixtures/dataTest.php"
+            "src/Formatters/json.php"
         ]
     },
     "require": {

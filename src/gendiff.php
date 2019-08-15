@@ -2,7 +2,7 @@
 
 namespace Differ\genDiff;
 
-use function Differ\parsers\genArr;
+use function Differ\parsers\genData;
 use Docopt;
 use Funct\Collection;
 
@@ -30,11 +30,17 @@ DOCOPT;
 
 function genDiff($pathToFile1, $pathToFile2, $format = 'pretty')
 {
-    $arr1 = genArr($pathToFile1);
-    $arr2 = genArr($pathToFile2);
-    $ast = buildAst($arr1, $arr2);
-    $printing = "Differ\\Formatters\\{$format}\\printing";
-    return $printing($ast);
+    $arr1 = genData($pathToFile1);
+    $arr2 = genData($pathToFile2);
+    if ($arr1 && $arr2) {
+        $ast = buildAst($arr1, $arr2);
+        $printing = "Differ\\Formatters\\{$format}\\printing";
+        return $printing($ast);
+    } elseif (!$arr1) {
+        return "Error reading file '{$pathToFile1}'";
+    } else {
+        return "Error reading file '{$pathToFile2}'";
+    }
 }
 
 function buildAst($arr1, $arr2)

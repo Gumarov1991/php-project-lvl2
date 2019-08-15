@@ -5,20 +5,24 @@ namespace Differ\parsers;
 use Symfony\Component\Yaml\Yaml;
 
 
-function genArr($pathToFile)
+function genData($pathToFile)
 {
     $absolutPath = $pathToFile[0] === '/' ? $pathToFile : __DIR__ . "/{$pathToFile}";
-    $extensionFile = getExtesion($pathToFile);
-    if ($extensionFile === 'json') {
-        return json_decode(file_get_contents($absolutPath), true);
-    }
-    if ($extensionFile === 'yaml' || $extensionFile === 'yml') {
-        return Yaml::parseFile($absolutPath);
-    }
+    $file = new \SplFileInfo($pathToFile);
+    $extensionFile = $file->getExtension();
+    $data = parseFile($absolutPath, $extensionFile);
+    return $data;
+
 }
 
-function getExtesion($pathToFile)
+function parseFile($path, $extension)
 {
-    preg_match('/[^\.]+$/', $pathToFile, $matches);
-    return $matches[0];
+    if ($extension === 'json') {
+        $result = json_decode(file_get_contents($path), true);
+    } elseif ($extension === 'yaml' || $extension === 'yml') {
+        $result = Yaml::parseFile($path);
+    } else {
+        $result = "";
+    }
+    return $result;
 }
