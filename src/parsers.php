@@ -12,7 +12,6 @@ function genData($pathToFile)
     $extensionFile = $file->getExtension();
     $data = parseFile($absolutPath, $extensionFile);
     return $data;
-
 }
 
 function parseFile($path, $extension)
