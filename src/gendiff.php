@@ -6,40 +6,44 @@ use function Differ\parsers\genData;
 use Docopt;
 use Funct\Collection;
 
+const DOCOPT = <<<'DOCOPT'
+Generate diff
+
+Usage:
+    gendiff (-h|--help)
+    gendiff (-v|--version)
+    gendiff [--format <fmt>] <firstFile> <secondFile>
+
+Options:
+    -h --help                     Show this screen
+    -v --version                  Show version
+    --format <fmt>                Report format [default: pretty]
+DOCOPT;
+
 function run()
 {
-    $doc = <<<'DOCOPT'
-    Generate diff
-
-    Usage:
-        gendiff (-h|--help)
-        gendiff (-v|--version)
-        gendiff [--format <fmt>] <firstFile> <secondFile>
-
-    Options:
-        -h --help                     Show this screen
-        -v --version                  Show version
-        --format <fmt>                Report format [default: pretty]
-DOCOPT;
-    $docopt = Docopt::handle($doc, ['version' => '1.0.0']);
-    $format = $docopt['--format'];
+    $docopt = getArgs(DOCOPT);
     $pathToFile1 = $docopt['<firstFile>'];
     $pathToFile2 = $docopt['<secondFile>'];
+    $format = $docopt['--format'];
     print_r(genDiff($pathToFile1, $pathToFile2, $format));
+}
+
+function getArgs($content)
+{
+    return Docopt::handle($content, ['version' => '1.0.0']);
 }
 
 function genDiff($pathToFile1, $pathToFile2, $format = 'pretty')
 {
-    $arr1 = genData($pathToFile1);
-    $arr2 = genData($pathToFile2);
-    if ($arr1 && $arr2) {
+    try {
+        $arr1 = genData($pathToFile1);
+        $arr2 = genData($pathToFile2);
         $ast = buildAst($arr1, $arr2);
-        $printing = "Differ\\Formatters\\{$format}\\printing";
-        return $printing($ast);
-    } elseif (!$arr1) {
-        return "Error reading file '{$pathToFile1}'";
-    } else {
-        return "Error reading file '{$pathToFile2}'";
+        $genRender = "Differ\\Formatters\\{$format}\\genRender";
+        return $genRender($ast);
+    } catch (\Exception $e) {
+        print_r($e->getMessage());
     }
 }
 

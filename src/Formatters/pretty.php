@@ -7,7 +7,7 @@ use Funct\Collection;
 const TAB_INDENT = 4;
 const FIRST_INDENT = 2;
 
-function printing($data, $countSpacesIndent = 0)
+function genRender($data, $countSpacesIndent = 0)
 {
     $arrResult = array_reduce($data, function ($acc, $value) use ($countSpacesIndent) {
         $indent = str_repeat(' ', $countSpacesIndent + FIRST_INDENT);
@@ -19,7 +19,7 @@ function printing($data, $countSpacesIndent = 0)
         
         switch ($status) {
             case 'nested':
-                $acc[] = $indent . "  " . $name . ": " . printing($value['children'], $countSpacesIndent + TAB_INDENT);
+                $acc[] = $indent . "  " . $name . ": " . genRender($value['children'], $countSpacesIndent + TAB_INDENT);
                 break;
             case 'not changed':
                 $acc[] = $indent . "  " . $name . ": " . $oldValue;

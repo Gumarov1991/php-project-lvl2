@@ -2,7 +2,7 @@
 
 namespace Differ\Formatters\json;
 
-function printing($data)
+function genRender($data)
 {
     $arrResult = array_reduce($data, function ($acc, $value) {
         $status = $value['status'];
@@ -13,7 +13,7 @@ function printing($data)
 
         switch ($status) {
             case 'nested':
-                $children = printing($value['children']);
+                $children = genRender($value['children']);
                 $acc[] = "\"  $name\"" . ": " . $children;
                 break;
             case 'not changed':

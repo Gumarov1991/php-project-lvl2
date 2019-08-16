@@ -2,7 +2,7 @@
 
 namespace Differ\Formatters\plain;
 
-function printing($data, $path = '')
+function genRender($data, $path = '')
 {
     $arrResult = array_reduce($data, function ($acc, $value) use ($path) {
         $status = $value['status'];
@@ -13,7 +13,7 @@ function printing($data, $path = '')
         switch ($status) {
             case 'nested':
                 $path .= "$name.";
-                $acc[] = printing($value['children'], $path);
+                $acc[] = genRender($value['children'], $path);
                 $path = '';
                 break;
             case 'deleted':

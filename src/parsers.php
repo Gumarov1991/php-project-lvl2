@@ -17,11 +17,16 @@ function genData($pathToFile)
 function parseFile($path, $extension)
 {
     if ($extension === 'json') {
-        $result = json_decode(file_get_contents($path), true);
+        $result = getJson($path);
     } elseif ($extension === 'yaml' || $extension === 'yml') {
         $result = Yaml::parseFile($path);
     } else {
-        $result = "";
+        throw new \Exception("Error reading file '{$path}'");
     }
     return $result;
+}
+
+function getJson($pathToFile)
+{
+    return json_decode(file_get_contents($pathToFile), true);
 }
