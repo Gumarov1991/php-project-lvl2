@@ -6,7 +6,7 @@ use Differ\tests\fixtures;
 use function Differ\genDiff\genDiff;
 use PHPUnit\Framework\TestCase;
 
-const DIR_FIXTURES = '../tests/fixtures/';
+const DIR = '../tests/fixtures/';
 const FILE_JSON_1 = 'before.json';
 const FILE_JSON_2 = 'after.json';
 const FILE_YAML_1 = 'before.yml';
@@ -27,7 +27,7 @@ class GenDiffTest extends TestCase
 
     public function testGendiff($expected, $nameFile1, $nameFile2, $format = 'pretty')
     {
-        $this->assertEquals(file_get_contents($expected), genDiff(DIR_FIXTURES . $nameFile1, DIR_FIXTURES . $nameFile2, $format));
+        $this->assertEquals(file_get_contents($expected), genDiff(DIR . $nameFile1, DIR . $nameFile2, $format));
     }
 
     public function additionProvider()
