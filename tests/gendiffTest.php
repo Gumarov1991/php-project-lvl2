@@ -6,18 +6,9 @@ use Differ\tests\fixtures;
 use function Differ\genDiff\genDiff;
 use PHPUnit\Framework\TestCase;
 
-const DIR = '../tests/fixtures/';
-const FILE_JSON_1 = 'before.json';
-const FILE_JSON_2 = 'after.json';
-const FILE_YAML_1 = 'before.yml';
-const FILE_YAML_2 = 'after.yml';
-const FILE_R_JSON_1 = 'recursiveBefore.json';
-const FILE_R_JSON_2 = 'recursiveAfter.json';
-
-const RES_JSON_PRETTY = __DIR__ . '/fixtures/resJsonPretty';
-const RES_YAML_JSON = __DIR__ . '/fixtures/resYamlJson';
-const RES_REC_JSON_PRETTY = __DIR__ . '/fixtures/resRecJsonPretty';
-const RES_REC_JSON_PLAIN = __DIR__ . '/fixtures/resRecJsonPlain';
+const PATH_TO_BEFORE = '../tests/fixtures/before.';
+const PATH_TO_AFTER = '../tests/fixtures/after.';
+const PATH_TO_RESULT = __DIR__ . '/fixtures/results/';
 
 class GenDiffTest extends TestCase
 {
@@ -25,18 +16,20 @@ class GenDiffTest extends TestCase
      * @dataProvider additionProvider
     */
 
-    public function testGendiff($expected, $nameFile1, $nameFile2, $format = 'pretty')
+    public function testGendiff($extension, $format = 'pretty')
     {
-        $this->assertEquals(file_get_contents($expected), genDiff(DIR . $nameFile1, DIR . $nameFile2, $format));
+        $pathToFile1 = PATH_TO_BEFORE . $extension;
+        $pathToFile2 = PATH_TO_AFTER . $extension;
+        $expected = PATH_TO_RESULT . $extension . '_' . $format;
+        $this->assertEquals(file_get_contents($expected), genDiff($pathToFile1, $pathToFile2, $format));
     }
 
     public function additionProvider()
     {
         return [
-            [RES_JSON_PRETTY, FILE_JSON_1, FILE_JSON_2],
-            [RES_YAML_JSON, FILE_YAML_1, FILE_YAML_2, 'json'],
-            [RES_REC_JSON_PRETTY, FILE_R_JSON_1, FILE_R_JSON_2, 'pretty'],
-            [RES_REC_JSON_PLAIN, FILE_R_JSON_1, FILE_R_JSON_2, 'plain'],
+            ['json'],
+            ['yml', 'json'],
+            ['json', 'plain']
         ];
     }
 }
