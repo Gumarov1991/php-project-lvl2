@@ -16,13 +16,15 @@ gendiff -h
 ```
 ### Ussage
 
-For examples we have 6 files:
+For examples we have 4 сompared files and 3 result files:
 
-[before.json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/before.json) //
+Compared files: [before.json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/before.json) //
 [after.json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/after.json) //
 [before.yml](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/before.yml) //
 [after.yml](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/after.yml) //
-[recursiveBefore.json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/recursiveBefore.json) //
-[recursiveAfter.json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/recursiveAfter.json)
 
-[![demo](https://asciinema.org/a/McrdGLRJ5OZkSWkD1Nd56wCo8.svg)](https://asciinema.org/a/McrdGLRJ5OZkSWkD1Nd56wCo8?autoplay=1)
+Result files: [json_pretty](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/results/json_pretty) //
+[yml_json](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/results/yml_json) //
+[json_plain](https://github.com/Gumarov1991/php-project-lvl2/blob/master/tests/fixtures/results/json_plain)
+
+[![demo](https://asciinema.org/a/s8DShmIg3EuBU8zjuNvjKMbGN.svg)](https://asciinema.org/a/s8DShmIg3EuBU8zjuNvjKMbGN?autoplay=1)
