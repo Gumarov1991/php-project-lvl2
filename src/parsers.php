@@ -8,8 +8,7 @@ use Symfony\Component\Yaml\Yaml;
 function genData($pathToFile)
 {
     $absolutPath = $pathToFile[0] === '/' ? $pathToFile : __DIR__ . "/{$pathToFile}";
-    $file = new \SplFileInfo($pathToFile);
-    $extensionFile = $file->getExtension();
+    $extensionFile = pathinfo($absolutPath, PATHINFO_EXTENSION);
     return parseFile($extensionFile, $absolutPath);
 }
 
