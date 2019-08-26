@@ -8,10 +8,10 @@ use Symfony\Component\Yaml\Yaml;
 function genData($pathToFile)
 {
     $absolutPath = $pathToFile[0] === '/' ? $pathToFile : __DIR__ . "/{$pathToFile}";
-    $extensionFile = pathinfo($absolutPath, PATHINFO_EXTENSION);
+    $fileExtension = pathinfo($absolutPath, PATHINFO_EXTENSION);
     if (file_exists($absolutPath)) {
-        $contentFile = file_get_contents($absolutPath);
-        return parse($contentFile, $extensionFile);
+        $fileContent = file_get_contents($absolutPath);
+        return parse($fileContent, $fileExtension);
     }
     throw new \Exception("The '{$pathToFile}' doesn't exists");
 }
@@ -29,5 +29,5 @@ function parse($data, $extension)
     if (isset($mapping[$extension])) {
         return $mapping[$extension]($data);
     }
-    throw new \Exception("The '.{$extensionFile}' extension is not supported");
+    throw new \Exception("The '.{$fileExtension}' extension is not supported");
 }
