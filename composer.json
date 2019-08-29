@@ -21,6 +21,7 @@
         "files": [
             "src/gendiff.php",
             "src/parsers.php",
+            "src/cli.php",
             "src/Formatters/pretty.php",
             "src/Formatters/plain.php",
             "src/Formatters/json.php"

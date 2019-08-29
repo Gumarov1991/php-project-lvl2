@@ -2,49 +2,33 @@
 
 namespace Differ\genDiff;
 
-use function Differ\parsers\genData;
 use Docopt;
 use Funct\Collection;
-
-const DOCOPT = <<<'DOCOPT'
-Generate diff
-
-Usage:
-    gendiff (-h|--help)
-    gendiff (-v|--version)
-    gendiff [--format <fmt>] <firstFile> <secondFile>
-
-Options:
-    -h --help                     Show this screen
-    -v --version                  Show version
-    --format <fmt>                Report format [default: pretty]
-DOCOPT;
-
-function run()
-{
-    $docopt = getArgs(DOCOPT);
-    $pathToFile1 = $docopt['<firstFile>'];
-    $pathToFile2 = $docopt['<secondFile>'];
-    $format = $docopt['--format'];
-    print_r(genDiff($pathToFile1, $pathToFile2, $format));
-}
-
-function getArgs($content)
-{
-    return Docopt::handle($content, ['version' => '1.0.0']);
-}
+use function Differ\parsers\parse;
 
 function genDiff($pathToFile1, $pathToFile2, $format = 'pretty')
 {
-    try {
-        $arr1 = genData($pathToFile1);
-        $arr2 = genData($pathToFile2);
-        $ast = buildAst($arr1, $arr2);
-        $genRender = "Differ\\Formatters\\{$format}\\genRender";
-        return $genRender($ast);
-    } catch (\Exception $e) {
-        print_r($e->getMessage());
+    $firstFileExtension = pathinfo($pathToFile1, PATHINFO_EXTENSION);
+    $secondFileExtension = pathinfo($pathToFile2, PATHINFO_EXTENSION);
+
+    $firstFileData = file_get_contents(genAbsolutPath($pathToFile1));
+    $secondFileData = file_get_contents(genAbsolutPath($pathToFile2));
+
+    $arr1 = parse($firstFileData, $firstFileExtension);
+    $arr2 = parse($secondFileData, $secondFileExtension);
+    
+    $ast = buildAst($arr1, $arr2);
+    $genRender = "Differ\\Formatters\\{$format}\\genRender";
+    return $genRender($ast);
+}
+
+function genAbsolutPath($pathToFile)
+{
+    $absolutPath = $pathToFile[0] === '/' ? $pathToFile : __DIR__ . "/{$pathToFile}";
+    if (file_exists($absolutPath)) {
+        return $absolutPath;
     }
+    throw new \Exception("The '{$pathToFile}' doesn't exists");
 }
 
 function buildAst($arr1, $arr2)
