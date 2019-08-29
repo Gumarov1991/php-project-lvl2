@@ -4,7 +4,7 @@ namespace Differ\parsers;
 
 use Symfony\Component\Yaml\Yaml;
 
-function parse($data, $extension)
+function parse($data, $type)
 {
     $mapping = [
         'yml' => function ($data) {
@@ -14,8 +14,8 @@ function parse($data, $extension)
             return json_decode($data, true);
         }
     ];
-    if (isset($mapping[$extension])) {
-        return $mapping[$extension]($data);
+    if (isset($mapping[$type])) {
+        return $mapping[$type]($data);
     }
-    throw new \Exception("The '.{$fileExtension}' extension is not supported");
+    throw new \Exception("The '.{$type}' extension is not supported");
 }
