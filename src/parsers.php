@@ -17,5 +17,5 @@ function parse($data, $type)
     if (isset($mapping[$type])) {
         return $mapping[$type]($data);
     }
-    throw new \Exception("The '.{$type}' extension is not supported");
+    throw new \Exception("The '.{$type}' data type is not supported");
 }

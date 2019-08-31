@@ -14,12 +14,12 @@ function genDiff($pathToFile1, $pathToFile2, $format = 'pretty')
     $firstFileData = file_get_contents(genAbsolutPath($pathToFile1));
     $secondFileData = file_get_contents(genAbsolutPath($pathToFile2));
 
-    $arr1 = parse($firstFileData, $firstFileExtension);
-    $arr2 = parse($secondFileData, $secondFileExtension);
+    $firstFileDecodedData = parse($firstFileData, $firstFileExtension);
+    $secondFileDecodedData = parse($secondFileData, $secondFileExtension);
     
-    $ast = buildAst($arr1, $arr2);
-    $genRender = "Differ\\Formatters\\{$format}\\genRender";
-    return $genRender($ast);
+    $ast = buildAst($firstFileDecodedData, $secondFileDecodedData);
+    $render = "Differ\\Formatters\\{$format}\\render";
+    return $render($ast);
 }
 
 function genAbsolutPath($pathToFile)
@@ -36,31 +36,31 @@ function buildAst($arr1, $arr2)
     $unionKeys = Collection\union(array_keys($arr1), array_keys($arr2));
     $result = array_reduce($unionKeys, function ($acc, $value) use ($arr1, $arr2) {
         if (isset($arr1[$value]) && !isset($arr2[$value])) {
-            $status = 'deleted';
-            $acc[] = buildNode($status, $value, $arr1[$value], '');
+            $nodeType = 'deleted';
+            $acc[] = buildNode($nodeType, $value, $arr1[$value], '');
         } elseif (!isset($arr1[$value])) {
-            $status = 'added';
-            $acc[] = buildNode($status, $value, $arr2[$value], '');
+            $nodeType = 'added';
+            $acc[] = buildNode($nodeType, $value, $arr2[$value], '');
         } elseif (is_array($arr1[$value]) && is_array($arr2[$value])) {
-            $status = 'nested';
+            $nodeType = 'nested';
             $children = buildAST($arr1[$value], $arr2[$value]);
-            $acc[] = buildNode($status, $value, '', '', $children);
+            $acc[] = buildNode($nodeType, $value, '', '', $children);
         } elseif ($arr1[$value] === $arr2[$value]) {
-            $status = 'not changed';
-            $acc[] = buildNode($status, $value, $arr1[$value], $arr2[$value]);
+            $nodeType = 'not changed';
+            $acc[] = buildNode($nodeType, $value, $arr1[$value], $arr2[$value]);
         } else {
-            $status = 'changed';
-            $acc[] = buildNode($status, $value, $arr1[$value], $arr2[$value]);
+            $nodeType = 'changed';
+            $acc[] = buildNode($nodeType, $value, $arr1[$value], $arr2[$value]);
         }
         return $acc;
     });
     return $result;
 }
 
-function buildNode($status, $name, $oldValue, $newValue, $children = [])
+function buildNode($nodeType, $name, $oldValue, $newValue, $children = [])
 {
     return [
-        'status' => $status,
+        'status' => $nodeType,
         'name' => $name,
         'oldValue' => $oldValue,
         'newValue' => $newValue,
