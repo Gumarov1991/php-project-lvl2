@@ -53,8 +53,6 @@ function genValue($value, $depth)
         return "{\n" . $firstIndent . $key . ": " . $value[$key] . "\n" . $lastIndent . "  }";
     } elseif (is_bool($value)) {
         return $value ? 'true' : 'false';
-    } elseif (is_int($value)) {
-        return $value;
     } else {
         return $value;
     }
