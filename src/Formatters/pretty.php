@@ -7,19 +7,20 @@ use Funct\Collection;
 const TAB_INDENT = 4;
 const FIRST_INDENT = 2;
 
-function render($data, $countSpacesIndent = 0)
+function render($data, $depth = 0)
 {
-    $arrResult = array_reduce($data, function ($acc, $value) use ($countSpacesIndent) {
-        $indent = str_repeat(' ', $countSpacesIndent + FIRST_INDENT);
+    $indent = genIndent($depth, FIRST_INDENT);
+    $arrResult = array_reduce($data, function ($acc, $value) use ($depth, $indent) {
         $status = $value['status'];
         $name = $value['name'];
-        $oldValue = genValue($value['oldValue'], $countSpacesIndent);
-        $newValue = genValue($value['newValue'], $countSpacesIndent);
+        $oldValue = genValue($value['oldValue'], $depth);
+        $newValue = genValue($value['newValue'], $depth);
         $children = $value['children'];
         
         switch ($status) {
             case 'nested':
-                $acc[] = $indent . "  " . $name . ": " . render($value['children'], $countSpacesIndent + TAB_INDENT);
+                $depth++;
+                $acc[] = $indent . "  " . $name . ": " . render($value['children'], $depth);
                 break;
             case 'not changed':
                 $acc[] = $indent . "  " . $name . ": " . $oldValue;
@@ -38,17 +39,17 @@ function render($data, $countSpacesIndent = 0)
         return $acc;
     }, []);
 
-    $indent = str_repeat(' ', $countSpacesIndent);
+    $indent = genIndent($depth);
     $strResult = "{\n" . implode("\n", $arrResult) . $indent . "\n" . $indent . "}";
     return $strResult;
 }
 
-function genValue($value, $countSpacesIndent)
+function genValue($value, $depth)
 {
     if (is_array($value)) {
         $key = key($value);
-        $firstIndent = str_repeat(' ', $countSpacesIndent + TAB_INDENT * 2);
-        $lastIndent = str_repeat(' ', $countSpacesIndent + FIRST_INDENT);
+        $firstIndent = genIndent($depth, TAB_INDENT * 2);
+        $lastIndent = genIndent($depth, FIRST_INDENT);
         return "{\n" . $firstIndent . $key . ": " . $value[$key] . "\n" . $lastIndent . "  }";
     } elseif (is_bool($value)) {
         return $value ? 'true' : 'false';
@@ -57,4 +58,10 @@ function genValue($value, $countSpacesIndent)
     } else {
         return $value;
     }
+}
+
+function genIndent($depth, $additionalIndent = 0)
+{
+    $countSpacesIndent = TAB_INDENT * $depth;
+    return str_repeat(' ', $countSpacesIndent + $additionalIndent);
 }
