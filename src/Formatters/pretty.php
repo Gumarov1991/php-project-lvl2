@@ -19,7 +19,6 @@ function render($data, $depth = 0)
         
         switch ($status) {
             case 'nested':
-                //$depth++;
                 $acc[] = $indent . "  " . $name . ": " . render($value['children'], $depth + 1);
                 break;
             case 'not changed':
