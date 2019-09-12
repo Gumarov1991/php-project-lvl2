@@ -18,6 +18,7 @@ function genDiff($pathToFile1, $pathToFile2, $format = 'pretty')
     $secondFileDecodedData = parse($secondFileData, $secondFileExtension);
     
     $ast = buildAst($firstFileDecodedData, $secondFileDecodedData);
+    print_r($ast);
     $render = "Differ\\Formatters\\{$format}\\render";
     return $render($ast);
 }
