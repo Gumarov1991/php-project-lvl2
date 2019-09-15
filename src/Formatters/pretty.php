@@ -19,20 +19,20 @@ function render($data, $depth = 0)
         
         switch ($status) {
             case 'nested':
-                $acc[] = $indent . "  " . $name . ": " . render($value['children'], $depth + 1);
+                $acc[] = "{$indent}  {$name}: " . render($value['children'], $depth + 1);
                 break;
             case 'not changed':
-                $acc[] = $indent . "  " . $name . ": " . $oldValue;
+                $acc[] = "{$indent}  {$name}: {$oldValue}";
                 break;
             case 'deleted':
-                $acc[] = $indent . "- " . $name . ": " . $oldValue;
+                $acc[] = "{$indent}- {$name}: {$oldValue}";
                 break;
             case 'added':
-                $acc[] = $indent . "+ " . $name . ": " . $oldValue ;
+                $acc[] = "{$indent}+ {$name}: {$oldValue}";
                 break;
             case 'changed':
-                $acc[] = $indent . "+ " . $name . ": " . $newValue;
-                $acc[] = $indent . "- " . $name . ": " . $oldValue;
+                $acc[] = "{$indent}+ {$name}: {$newValue}";
+                $acc[] = "{$indent}- {$name}: {$oldValue}";
                 break;
         }
         return $acc;

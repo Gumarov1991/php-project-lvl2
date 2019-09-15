@@ -17,13 +17,13 @@ function render($data, $path = '')
                 $path = '';
                 break;
             case 'deleted':
-                $acc[] = "Property '" . $path . $name . "' was removed";
+                $acc[] = "Property '{$path}{$name}' was removed";
                 break;
             case 'added':
-                $acc[] = "Property '" . $path . $name . "' was added with value: '$oldValue'";
+                $acc[] = "Property '{$path}{$name}' was added with value: '{$oldValue}'";
                 break;
             case 'changed':
-                $acc[] = "Property '" . $path . $name . "' was changed. From '$oldValue' to '$newValue'";
+                $acc[] = "Property '{$path}{$name}' was changed. From '{$oldValue}' to '{$newValue}'";
                 break;
         }
         return $acc;

@@ -2,7 +2,6 @@
 
 namespace Differ\tests;
 
-use Differ\tests\fixtures;
 use function Differ\genDiff\genDiff;
 use PHPUnit\Framework\TestCase;
 
@@ -16,18 +15,18 @@ class GenDiffTest extends TestCase
      * @dataProvider additionProvider
     */
 
-    public function testGendiff($extension, $format = 'pretty')
+    public function testGendiff($extension, $format)
     {
         $pathToFile1 = PATH_TO_BEFORE . $extension;
         $pathToFile2 = PATH_TO_AFTER . $extension;
-        $expected = PATH_TO_RESULT . $extension . '_' . $format;
+        $expected = PATH_TO_RESULT . $format;
         $this->assertEquals(file_get_contents($expected), genDiff($pathToFile1, $pathToFile2, $format));
     }
 
     public function additionProvider()
     {
         return [
-            ['json'],
+            ['json', 'pretty'],
             ['yml', 'json'],
             ['json', 'plain']
         ];
